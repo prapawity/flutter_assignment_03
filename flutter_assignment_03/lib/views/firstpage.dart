@@ -62,16 +62,16 @@ class FirstPageState extends State<FirstPage> {
               ? Container(
                   color: Colors.red,
                   child: StreamBuilder(
-                    stream: todo.collection("todo").snapshots(),
+                    stream: Firestore.instance.collection('todo').where('done', isEqualTo: false).snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshort) {
                       listFalse = [];
                       if (snapshort.hasData) {
                         for(var i = 0;i< snapshort.data.documents.length;i++){
-                          if(snapshort.data.documents.elementAt(i).data['status'] == false){
+                          if(snapshort.data.documents.elementAt(i).data['done'] == false){
                             listFalse.add(snapshort);
                           }
                         }
-                        return ListView.builder(
+                        return listFalse.length > 0 ? ListView.builder(
                           itemCount: listFalse.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
@@ -87,15 +87,17 @@ class FirstPageState extends State<FirstPage> {
                                     'title': listFalse[index].data.documents
                                         .elementAt(index)
                                         .data['title'],
-                                    'status': true
+                                    'done': value
                                   });
                                 },
                                 value: listFalse[index].data.documents
                                     .elementAt(index)
-                                    .data['status'],
+                                    .data['done'],
                               ),
                             );
                           },
+                        ) : Center(
+                          child: Text("No Data Found"),
                         );
                       } else {
                         return Center(
@@ -107,16 +109,16 @@ class FirstPageState extends State<FirstPage> {
               : Container(
                   color: Colors.pink,
                   child: StreamBuilder(
-                    stream: todo.collection("todo").snapshots(),
+                    stream: Firestore.instance.collection('todo').where('done', isEqualTo: true).snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshort) {
                       listFalse2 = [];
                       if (snapshort.hasData) {
                         for(var i = 0;i< snapshort.data.documents.length;i++){
-                          if(snapshort.data.documents.elementAt(i).data['status'] == true){
+                          if(snapshort.data.documents.elementAt(i).data['done'] == true){
                             listFalse2.add(snapshort);
                           }
                         }
-                        return ListView.builder(
+                        return listFalse2.length > 0 ? ListView.builder(
                           itemCount: listFalse2.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
@@ -132,16 +134,16 @@ class FirstPageState extends State<FirstPage> {
                                     'title': listFalse2[index].data.documents
                                         .elementAt(index)
                                         .data['title'],
-                                    'status': value
+                                    'done': value
                                   });
                                 },
                                 value: listFalse2[index].data.documents
                                     .elementAt(index)
-                                    .data['status'],
+                                    .data['done'],
                               ),
-                            );
+                            ) ;
                           },
-                        );
+                        ) : Center(child: Text('No Data Found'),);
                       } else {
                         return Center(
                           child: Text("No Data"),

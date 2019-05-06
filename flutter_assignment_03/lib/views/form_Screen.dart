@@ -5,7 +5,7 @@ import 'package:flutter_assignment_03/controller/controller.dart';
 class form_screen extends StatelessWidget {
   FirebaseFirestoreService todo = new FirebaseFirestoreService();
   final myController = TextEditingController();
-  final _formkey = GlobalKey<FormState>();
+  static final _formkey = GlobalKey<FormState>();
   String title = "";
   @override
   Widget build(BuildContext context) {
@@ -23,16 +23,22 @@ class form_screen extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.all(20),
                     child: TextFormField(
-                      controller: myController,
-                      decoration:
-                          InputDecoration(labelText: 'Enter your username'),
-                          validator: (value){
-                            if (value.isEmpty){
-                              return 'Please Fill Subject';
-                            }else{
-                              title = value;
-                            }
-                          },
+                      // controller: myController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: "Subject :",
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Please fill Subject";
+                        } else {
+                          title = value;
+                        }
+                      },
                     ),
                   ),
                   Container(
@@ -45,7 +51,12 @@ class form_screen extends StatelessWidget {
                       splashColor: Colors.blueGrey,
                       onPressed: () {
                         _formkey.currentState.validate();
-                        Firestore.instance.collection('todo').add({'title':title,'status':false});
+                        if (title.length > 0) {
+                          Firestore.instance
+                              .collection('todo')
+                              .add({'title': title, 'done': false});
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   ),
